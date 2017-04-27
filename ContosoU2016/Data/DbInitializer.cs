@@ -15,7 +15,7 @@ namespace ContosoU2016.Models
     {
         public static void Initialize(SchoolContext context)
         {
-            context.Database.EnsureCreated();// EnsureCreated method will automatically create the database.
+            //context.Database.EnsureCreated();// EnsureCreated method will automatically create the database.
             //Later we will handle model changes by using Code First Migrations to change the database schema 
             //instead of dropping and re-creating the database
             //https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/complex-data-model#seed-the-database-with-test-data

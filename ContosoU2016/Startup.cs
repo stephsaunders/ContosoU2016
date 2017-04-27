@@ -98,7 +98,7 @@ namespace ContosoU2016
              * your seed method and start fresh with a new database the same way.
              * 
              * Later we will modify the database when the data model changes,  without deleting and 
-             * re-create
+             * re-create it using CODE FIRST Migration
              */
         }
     }
