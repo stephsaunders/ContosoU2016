@@ -60,7 +60,8 @@ namespace ContosoU2016
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            ILoggerFactory loggerFactory, SchoolContext context)//(SS) added SchoolContext Middeware
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -88,6 +89,17 @@ namespace ContosoU2016
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //Initialize the database with SEED data
+            DbInitializer.Initialize(context);
+            /*
+             * The first time you run the application the database will be created and seeded with 
+             * test data. Whenever you change your data model, you can delete the database, update 
+             * your seed method and start fresh with a new database the same way.
+             * 
+             * Later we will modify the database when the data model changes,  without deleting and 
+             * re-create
+             */
         }
     }
 }

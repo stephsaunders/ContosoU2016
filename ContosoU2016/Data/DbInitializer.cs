@@ -11,7 +11,7 @@ namespace ContosoU2016.Models
     //Add code to initialize the database with test data
 
     // Code will cause a database to be created when needed and loads test data into the new database
-    public static class DbInitializer_old
+    public static class DbInitializer
     {
         public static void Initialize(SchoolContext context)
         {
