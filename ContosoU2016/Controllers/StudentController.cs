@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoU2016.Data;
 using ContosoU2016.Models;
+using ContosoU2016.Helpers;
 
 namespace ContosoU2016.Controllers
 {
@@ -20,14 +21,26 @@ namespace ContosoU2016.Controllers
         }
 
         // GET: Student
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, 
+                                               string searchString, 
+                                               string currentFilter,
+                                               int? page)
         {
+
+            //sortOrder:        for Sorting
+            //searchString:     for Searching
+            //currentFilter:    to keep current search filter
+            //page: for paging (optional argument)
+
+            ViewData["CurrentSort"] = sortOrder;
 
             //(SS): Add paging, sorting and filtering functoality
             // return View(await _context.Students.ToListAsync());
             var students = from s in _context.Students
                            select s; //SELECT FirstName, LastName, Email, EnrollmentDate FROM Students
-            //Part 1: For Sorting
+            
+         //Part 1: For Sorting
+
             //Defalt Sort LastName
             ViewData["LNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "lname_desc" : "";
 
@@ -35,6 +48,32 @@ namespace ContosoU2016.Controllers
             ViewData["FNamesortParm"] = sortOrder == "fname" ? "fname_desc" : "fname";
             ViewData["EmailSortParm"] = sortOrder == "email" ? "email_desc" : "email";
             ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+
+
+
+            //Part 2: Filtering
+
+            if (searchString == null)
+            {
+                searchString = currentFilter;
+            }
+            else
+            {
+                page = 1; //Start on first page
+                /*
+                 * If the searchstring is changed during paging, the page has to be reset to 1
+                 * because the new filter can result in different data to display
+                 */
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            if(!string.IsNullOrEmpty(searchString))
+            {
+                //User entered a search criteria-> search by last name or first name
+                students = students.Where(s => s.LastName.Contains(searchString) || 
+                                               s.FirstName.Contains(searchString));
+            }
 
 
             //Apply the Sorting
@@ -66,7 +105,12 @@ namespace ContosoU2016.Controllers
                     break;
             }
 
-            return View(await students.ToListAsync());
+            //(SS): changed to use paginated list
+            //return View(await students.ToListAsync());
+            int pageSize = 5;//how many will show up on page
+            return View(await PaginatedList<Student>.CreateAsync(students, page ?? 1, pageSize));
+            //double question (??) is the null-coalescing operator
+            //page the value of page unless page is null, in which case it is assigned the value of 1 
         }
 
         // GET: Student/Details/5
