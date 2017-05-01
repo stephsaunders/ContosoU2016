@@ -5,25 +5,24 @@ namespace ContosoU2016.Models
 {
     public class Course
     {
-        /*you can turn off IDENTITY propery by using the DatabaseGeneratedOption.None
-         * you have the following 3 options:
-         *  Computed: Database generates a value when a row is inserted or updataed.
-         *  Identity: Database generates a value when a row is inserted
-         *  None: Database does not generate a value 
-         *  
-         *  IDENTITY (auto incrament) 
-         *  
-         */
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+
+        //You can turn off IDENTITY Propery by using the DatabaseGeneratedOption.None
+        //You have the following 3 options:
+        //  Computed: Database generates a value when a row is inserted or updated.
+        //  Identity: Database generates a value when a row is inserted
+        //  None: Database does not generate a value
         public int CourseID { get; set; }//PK
 
         public string Title { get; set; }
 
         public int Credits { get; set; }
 
-        // ================NAVIGATION PROPERTY================ //
+        //================= NAVIGATION PROPERTIES =================== //
         //1 course: many enrollments
-        public virtual ICollection<Enrollment> Enrollment { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; }
+
+
     }
 }
