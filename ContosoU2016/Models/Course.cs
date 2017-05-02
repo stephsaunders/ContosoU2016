@@ -21,7 +21,7 @@ namespace ContosoU2016.Models
         [StringLength(50,MinimumLength =3)]
         public string Title { get; set; }
 
-        [Range(0s,5)]
+        [Range(0,5)]
         public int Credits { get; set; }
 
         //================= NAVIGATION PROPERTIES =================== //
