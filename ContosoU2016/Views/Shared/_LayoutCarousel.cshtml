@@ -36,13 +36,20 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     @await Html.PartialAsync("_MenuPartial")
                     @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                    @*<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contact <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-controller="Home" asp-action="Index">Our Locations</a></li>
+                            <li><a asp-controller="Home" asp-action="Index">Request Information</a></li>
+                        </ul>
+                    </li>*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </nav>
     <section>
-        @RenderBody()
+        @RenderBody()           
     </section>
     <footer>
         <div class="container">
@@ -73,7 +80,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4">                   
                     <div class="widget">
                         <h5>Recent News</h5>
                         <ul class="link-list">
@@ -108,7 +115,6 @@
             </div>
         </div>
     </footer>
-
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
