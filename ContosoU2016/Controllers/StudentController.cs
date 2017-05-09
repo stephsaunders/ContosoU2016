@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoU2016.Data;
 using ContosoU2016.Models;
 using ContosoU2016.Helpers;
+using ContosoU2016.Models.SchoolViewModels;
 
 namespace ContosoU2016.Controllers
 {
@@ -17,62 +18,76 @@ namespace ContosoU2016.Controllers
 
         public StudentController(SchoolContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Student
-        public async Task<IActionResult> Index(string sortOrder, 
-                                               string searchString, 
+        public async Task<IActionResult> Index(string sortOrder,
+                                               string searchString,
                                                string currentFilter,
                                                int? page)
         {
-
-            //sortOrder:        for Sorting
-            //searchString:     for Searching
-            //currentFilter:    to keep current search filter
+            //sortOrder:  for Sorting
+            //searchString:  for Searching 
+            //currentFilter:  to keep current search 
             //page: for paging (optional argument)
+
 
             ViewData["CurrentSort"] = sortOrder;
 
-            //(SS): Add paging, sorting and filtering functoality
-            // return View(await _context.Students.ToListAsync());
+            //return View(await _context.Students.ToListAsync());
+            //mwilliams:  add paging, sorting and filtering functionality
             var students = from s in _context.Students
                            select s; //SELECT FirstName, LastName, Email, EnrollmentDate FROM Students
-            
-         //Part 1: For Sorting
 
-            //Defalt Sort LastName
+            //Part 1:  Sorting
+
+            //Default Sort LastName
             ViewData["LNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "lname_desc" : "";
 
-            //other sort Order  //Toggle between ascending and descending
-            ViewData["FNamesortParm"] = sortOrder == "fname" ? "fname_desc" : "fname";
+            //Other Sort Orders //Toggle between ascending and descending
+            ViewData["FNameSortParm"] = sortOrder == "fname" ? "fname_desc" : "fname";
             ViewData["EmailSortParm"] = sortOrder == "email" ? "email_desc" : "email";
             ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
 
 
+            ////rewrite the one of the coalescing if 
+            //if (sortOrder == "fname")
+            //{
+            //    sortOrder = "fname_desc";
+            //}
+            //else
+            //{
+            //    sortOrder = "fname";
+            //}
+
+            //ViewData["FNameSortParm"] = sortOrder;
 
             //Part 2: Filtering
-
             if (searchString == null)
             {
                 searchString = currentFilter;
             }
             else
             {
-                page = 1; //Start on first page
+                page = 1;//Start on first page
                 /*
                  * If the searchstring is changed during paging, the page has to be reset to 1
                  * because the new filter can result in different data to display
+                 * 
                  */
             }
 
+
             ViewData["CurrentFilter"] = searchString;
 
-            if(!string.IsNullOrEmpty(searchString))
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                //User entered a search criteria-> search by last name or first name
-                students = students.Where(s => s.LastName.Contains(searchString) || 
-                                               s.FirstName.Contains(searchString));
+                //User entered a search criteria -> search by last name or first name
+                students = students.Where(s => s.LastName.Contains(searchString) ||
+                                          s.FirstName.Contains(searchString));
+
             }
 
 
@@ -82,63 +97,66 @@ namespace ContosoU2016.Controllers
                 case "lname_desc":
                     students = students.OrderByDescending(s => s.LastName);
                     break;
+                //FirstName
                 case "fname":
                     students = students.OrderBy(s => s.FirstName);
                     break;
                 case "fname_desc":
                     students = students.OrderByDescending(s => s.FirstName);
                     break;
+                //Email
                 case "email":
                     students = students.OrderBy(s => s.Email);
                     break;
                 case "email_desc":
                     students = students.OrderByDescending(s => s.Email);
                     break;
+                //Date
                 case "date":
                     students = students.OrderBy(s => s.EnrollmentDate);
                     break;
                 case "date_desc":
                     students = students.OrderByDescending(s => s.EnrollmentDate);
                     break;
-                default:  //LastName ascending
+                default: //LastName ascending
                     students = students.OrderBy(s => s.LastName);
                     break;
+
             }
 
-            //(SS): changed to use paginated list
+            //mwilliams:  Changed to use paginated list
             //return View(await students.ToListAsync());
-            int pageSize = 5;//how many will show up on page
+            int pageSize = 5;
             return View(await PaginatedList<Student>.CreateAsync(students, page ?? 1, pageSize));
             //double question (??) is the null-coalescing operator
-            //page the value of page unless page is null, in which case it is assigned the value of 1 
+            //page the value of page unless page is null, in which case it is assigned the value of 1
+
         }
+
 
         // GET: Student/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();  
+                return NotFound();
                 /*
                  * Status Codes
                  * Success:
-                 * return ok() <- HTTP status code 200
+                 * return Ok() <- HTTP status code 200
                  * return Created() <- HTTP status code 201
                  * return NoContent() <- HTTP status code 204
                  * 
                  * Client Error:
-                 * return BadRequest() <-- HTTP status 400
-                 * return Unauthorized <- HTTP status 401
+                 * return BadRequest() <- HTTP status 400
+                 * return Unauthorized() <- HTTP status 401
                  * return NotFound() <- HTTP status 404
                  */
             }
 
-            /*
-             * (SS): Update to include related data (enrollment)             
-
-            var student = await _context.Students
-                .SingleOrDefaultAsync(m => m.ID == id);
-             */
+            //mwilliams:  Update to include related data (enrollment)
+            //var student = await _context.Students
+            //    .SingleOrDefaultAsync(m => m.ID == id);
             var student = await _context.Students
                 .Include(s => s.Enrollments).ThenInclude(c => c.Course)
                 .AsNoTracking()
@@ -152,6 +170,7 @@ namespace ContosoU2016.Controllers
             * 
             * Ref:  https://docs.microsoft.com/en-us/ef/core/querying/tracking
             */
+
 
             if (student == null)
             {
@@ -174,8 +193,7 @@ namespace ContosoU2016.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EnrollmentDate,LastName,FirstName,Email")] Student student)
         {
-            //(SS): remove the id from the bind attribute: ID is the pk as well as Identity
-
+            //mwilliams:  remove the id from the bind attributes:  ID is the PK as well as IDENTITY
             try
             {
                 if (ModelState.IsValid)
@@ -187,12 +205,11 @@ namespace ContosoU2016.Controllers
             }
             catch (DbUpdateException /*ex*/)
             {
-
-                //Log the error (by uncommenting the ex variable) and write to a log file.
+                //Log the error (by uncommenting the ex variable ) and write to a log file.
                 //return a ModelStateError back to user
-                ModelState.AddModelError("", "Unable to save changes. " + "Please try again");
+                ModelState.AddModelError("", "Unable to save changes. Please try again");
             }
-            
+
             return View(student);
         }
 
@@ -217,68 +234,50 @@ namespace ContosoU2016.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)  //(SS)  , [Bind("EnrollmentDate,ID,LastName,FirstName,Email")] Student student
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id == null)  //(SS) != student.ID
+            if (id == null)
             {
                 return NotFound();
             }
 
-            //Find the student to be updated
+            //Find the student tgo be updated
             var studentToUpdate = await _context.Students.SingleOrDefaultAsync(s => s.ID == id);
 
             //Try to update this student
-            if(await TryUpdateModelAsync<Student>(
-                studentToUpdate, "",s=>s.FirstName, s=>s.LastName, s => s.Email, s => s.EnrollmentDate))
+            if (await TryUpdateModelAsync<Student>(
+                studentToUpdate, "", s => s.FirstName, s => s.LastName, s => s.Email, s => s.EnrollmentDate))
             {
                 try
                 {
-                    await _context.SaveChangesAsync(); // save changes back to database
-                    return RedirectToAction("Index"); //redirect user back to index route
+                    await _context.SaveChangesAsync(); //save changes back to database
+                    return RedirectToAction("Index"); // redirect user back to index route
                 }
-                catch (DbUpdateConcurrencyException  /*ex*/)
+                catch (DbUpdateException /*ex*/)
                 {
-                    //Log the error (by uncommenting the ex variable) and write to a log file.
+                    //Log the error (by uncommenting the ex variable ) and write to a log file.
                     //return a ModelStateError back to user
-                    ModelState.AddModelError("", "Unable to save changes. " + "Please try again");                   
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                                                 "Please try again");
                 }
             }
-            //return the view and attach the studentToUpdate model
+
+            //return the view and attach the studentToupdate model
             return View(studentToUpdate);
 
-            /*
-                if (ModelState.IsValid)
-                {
-                    try
-                    {
-                        _context.Update(student);
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!StudentExists(student.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction("Index");
-                }
-                return View(student);
-            */
+
         }
 
         // GET: Student/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
         {
-            //(SS)
-            //This code accepts an optional boolean parameter that indicates whether the method was called after a 
-            //delete failure (failure saving changes back to database)
-            //when it is called by the HTTPPost Delete method in response to a database update error, this parameter
-            //will be passed in set to true
+            //mwilliams
+            /* This code accepts an optional boolean parameter that indicates whether the method was called aftere a 
+             * delete failure (failure saving changes back to database)
+             * When  it is called by the HTTPPost Delete method in response to a databas update error, this parameter
+             * will be passed in set to true
+             */
+
             if (id == null)
             {
                 return NotFound();
@@ -291,8 +290,8 @@ namespace ContosoU2016.Controllers
                 return NotFound();
             }
 
-            //(SS): Return update error if necessary
-            if(saveChangesError.GetValueOrDefault())
+            //mwilliams:  return update error if necessary
+            if (saveChangesError.GetValueOrDefault())
             {
                 ViewData["ErrorMessage"] = "Delete failed! Try again later.";
             }
@@ -307,11 +306,13 @@ namespace ContosoU2016.Controllers
         {
             var student = await _context.Students.AsNoTracking().SingleOrDefaultAsync(m => m.ID == id);
 
-            //(SS):  check if student exists
+            //mwilliams:  check if student exists
             if(student == null)
             {
                 return RedirectToAction("Index");
             }
+
+
             try
             {
                 _context.Students.Remove(student);
@@ -320,10 +321,29 @@ namespace ContosoU2016.Controllers
             }
             catch (DbUpdateException /*ex*/)
             {
-                //return user to te delet get method passing it the current student (ID)
-                //and a flag argumnt set to TRUE representing and error saving record
-                return RedirectToAction("Delete",new { id = id, saveChangesError=true});
+                //Return user to the Delete GET Method passing it the current student (ID)
+                // and a flag argument set to TRUE representing an error saving record
+                return RedirectToAction("Delete",new {id=id,saveChangesError=true } );
             }
+        }
+
+
+        //mwilliams:  
+        //GET Student/Stats
+        public async Task<IActionResult> Stats()
+        {
+            //Populate the EnrollmentDateGroup ViewModel with Student Statistics
+            IQueryable<EnrollmentDateGroup> data =
+                from student in _context.Students  //FROM Students 
+                group student by student.EnrollmentDate into dateGroup //GROUP BY EnrollmentDate
+                select new EnrollmentDateGroup //SELECT EnrollmentDate, COUNT(*) as StudentCount
+                {
+                    EnrollmentDate = dateGroup.Key,
+                    StudentCount = dateGroup.Count()
+                };
+
+
+            return View(await data.AsTracking().ToListAsync());//AsNoTracking is not necessary
         }
 
         private bool StudentExists(int id)
