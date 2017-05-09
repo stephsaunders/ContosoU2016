@@ -1,7 +1,6 @@
 @*@model IEnumerable<ContosoU2016.Models.Instructor>*@
 @model ContosoU2016.Models.SchoolViewModels.InstructorIndexData
 
-
 @{
     ViewData["Title"] = "Index";
 }
@@ -16,10 +15,7 @@
         <thead>
             <tr>
                 <th>
-                    First Name
-                </th>
-                <th>
-                    Last Name
+                   Name
                 </th>
                 <th>
                     Email
@@ -31,7 +27,7 @@
                     Office
                 </th>
                 <th>
-                    Course
+                    Courses
                 </th>
                 <th></th>
             </tr>
@@ -39,7 +35,6 @@
         <tbody>
             @foreach (var item in Model.Instructors)
             {
-                //How to make it highlight
                 string selectedRow = "";
                 if(item.ID == (int?)ViewData["InstructorID"])
                 {
@@ -47,10 +42,7 @@
                 }
                 <tr class="@selectedRow">
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        @Html.DisplayFor(modelItem => item.FullName)
                     </td>
                     <td>
                         @Html.DisplayTextFor(modelItem => item.Email)
@@ -58,21 +50,20 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.HireDate)
                     </td>
-                    <td> 
-                        @Html.DisplayFor(modelItem => item.OfficeAssignment.Location)                        
-                        @*another way to do it:
-                            @if(@item.OfficeAssignment.Location !=null)
-                            {
-                                @item.OfficeAssignment.Location
-                            }
-                        *@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OfficeAssignment.Location)
+                        @*@if (@item.OfficeAssignment.Location != null)
+                        {
+                            @item.OfficeAssignment.Location
+                        }*@
+                      
                     </td>
                     <td>
-                        @{ 
-                            foreach(var course in item.Courses)
+                        @{
+                            foreach (var course in item.Courses)
                             {
                                 @*@course.Course.CourseIdTitle <br />*@
-                                @course.Course.CourseID@::  @course.Course.Title <br />
+                                @course.Course.CourseID@::&nbsp;&nbsp;@course.Course.Title <br />
 
                             }
                         }
@@ -84,19 +75,19 @@
                         <a title="Delete Instructor" asp-action="Delete" asp-route-id="@item.ID" class="ico-danger"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
                 </tr>
-            }
+}
         </tbody>
     </table>
-    @* Instructo Selected: Show courses that instructor teaches*@
-    @if (Model.Courses != null)//make sure they have courses for this instructor first
+    @* Instructor Selected:  Show courses that instructor teaches *@
+    @if(Model.Courses != null)//make sure we have courses for this instructor first
     {
-        <h3>Courses taight by: @ViewData["InstructorName"]</h3>
+        <h3>Courses taught by: @ViewData["InstructorName"]</h3>
         <table class="table">
             <thead>
                 <tr>
                     <th></th>
                     <th>Number</th>
-                    <th>Ttle</th>
+                    <th>Title</th>
                     <th>Department</th>
                 </tr>
             </thead>
@@ -104,30 +95,31 @@
                 @foreach(var item in Model.Courses)
                 {
                     string selectedCourse = "";
-                    if (item.CourseID == (int?)ViewData["CourseID"])
+                    if(item.CourseID == (int?)ViewData["CourseID"])
                     {
                         selectedCourse = "danger";
+
                     }
-                <tr class="@selectedCourse">
-                    <td><a title="View Courses" 
-                           asp-action="Index" 
-                           asp-route-courseID="@item.CourseID" 
-                           class="ico-success">
-                        <i class="glyphicon glyphicon-list">
-                        </i>
-                        </a> 
-                    </td>
-                    <td>@item.CourseID</td>
-                    <td>@item.Title</td>
-                    <td>@item.Department.Name</td>
-                </tr>
+                    <tr class="@selectedCourse">
+                        <td><a title="View Courses" asp-action="Index" 
+                               asp-route-courseID="@item.CourseID"
+                               class="ico-success"><i class="glyphicon glyphicon-list"></i></a>
+                        </td>
+                        <td>@item.CourseID</td>
+                        <td>@item.Title</td>
+                        <td>@item.Department.Name</td>
+                    </tr>
+
                 }
+
             </tbody>
+
         </table>
 
     }
-    @*Course Selected: Show enrollment for selected course*@
-    @if(Model.Enrollments != null)
+
+    @* Course Selected:  Show enrollment(s) for selected course *@
+    @if (Model.Enrollments != null)
     {
         string CourseTitle = Model.Enrollments.First().Course.Title;
         <h3>Students enrolled in: @CourseTitle</h3>
@@ -139,15 +131,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Enrollments)
+                @foreach(var item in Model.Enrollments)
                 {
                     <tr>
                         <td>@item.Student.FullName</td>
                         <td>@Html.DisplayFor(m=>item.Grade)</td>
                     </tr>
+
                 }
             </tbody>
         </table>
 
     }
+
 </div>

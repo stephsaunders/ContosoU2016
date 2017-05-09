@@ -39,7 +39,7 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
         </div>
-        @*(SS): Added Office Location need to fix*@
+        @* mwilliams:  Added Office Location *@
         <div class="form-group">
             <label asp-for="OfficeAssignment.Location" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -47,52 +47,12 @@
                 <span asp-validation-for="OfficeAssignment.Location" class="text-danger"></span>
             </div>
         </div>
-        @*(SS): Added List of COurses*@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <table>
-                    <tr>
-                        @{ 
-                            //need a counter for creating html table with 3 columns
-                            int cnt = 0;
-                            //create list of AssignedCourseData called courses
-                            //populated with ViewBag Courses
-                            List<ContosoU2016.Models.SchoolViewModels.AssignedCourseData> courses = ViewBag.Courses;
-
-                            //loop each of the courses to creat 3 columns
-                            //note: We will need to use the @: to indicate the start of content
-                            foreach (var course in courses)
-                            {
-                                if(cnt++ %3 == 0)
-                                {
-                                    @:</tr><tr>
-                                }
-                                @:<td>
-                                <input type="checkbox"
-                                       name="selectedCourses"
-                                       value="@course.CourseID"
-                                       @(Html.Raw(course.Assigned? "checked" : ""))
-                                       />//html.raw allows you to print text containing html and does not encode split
-                                <span style="font-weight:bold;padding-right:.75em;"> @course.CourseID</span>@course.Title
-                                @:</td>
-                            }
-                            @:</tr>
-                        }
-                </table>
-            </div> 
-        </div>
-
-
-
-
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
-
         </div>
+    </div>
 </form>
 
 <div>
