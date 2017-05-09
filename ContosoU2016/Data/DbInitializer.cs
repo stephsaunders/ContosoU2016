@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using ContosoU2016.Data;
-using ContosoU2016.Models;
 
 namespace ContosoU2016.Models
 {
-    //mwilliams: Part 2 -  Create the Data Models(7)
+    //mwilliams: Part 2 -  Create the Data Model
     //Add code to initialize the database with test data
 
     // Code will cause a database to be created when needed and loads test data into the new database

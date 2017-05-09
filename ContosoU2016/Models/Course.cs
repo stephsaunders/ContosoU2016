@@ -14,19 +14,18 @@ namespace ContosoU2016.Models
         //  Computed: Database generates a value when a row is inserted or updated.
         //  Identity: Database generates a value when a row is inserted
         //  None: Database does not generate a value
-
-        [Display(Name = "Course Number")]
+        [Display(Name="Course Number")]
         public int CourseID { get; set; }//PK
 
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(50,MinimumLength =3)]
         [Required]
         public string Title { get; set; }
 
-        [Range(0, 5)]
+        [Range(0,5)]
         public int Credits { get; set; }
 
-        [Display(Name = "Department")]
-        public int DepartmentID { get; set; }//FK: 1 Department: many courses
+        [Display(Name ="Department")]
+        public int DepartmentID { get; set; }//FK: 1 department: many courses
 
         //================= NAVIGATION PROPERTIES =================== //
         //1 course: many enrollments
@@ -36,16 +35,19 @@ namespace ContosoU2016.Models
         public virtual ICollection<CourseAssignment> Assignments { get; set; }
 
         public virtual Department Department { get; set; }
+
         //Calculated Property
-        //Return the courseId and course title
+        //Return the CourseID and Course title 
         public string CourseIdTitle
         {
             get
             {
                 return CourseID + ": " + Title;
-                //1: Chemistry
-                //2: Math
+                //1:  Chemistry
+                //2:  Math
             }
         }
+
+
     }
 }

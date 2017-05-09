@@ -12,11 +12,11 @@ namespace ContosoU2016.Models
         public int DepartmentID { get; set; }//PK
 
         [Required]
-        [StringLength(50,MinimumLength =3)]
+        [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
 
-        [DataType(DataType.Currency)]//for client only
-        [Column(TypeName = "money")]
+        [DataType(DataType.Currency)]//client only
+        [Column(TypeName ="money")] //SQL Server money data type
         public decimal Budget { get; set; }
 
         [DataType(DataType.Date)]
@@ -25,20 +25,18 @@ namespace ContosoU2016.Models
         public DateTime CreatedDate { get; set; }
 
         //Relationship to Instructor
-        //A department may have an Administor (Instructor), and 
-        //an Administor is always an Instructor
+        //A department MAY have an Administrator (Instructor), and an 
+        //Administrator is always an Instructor
+        public int? InstructorID { get; set; }//? denotes nullable
 
-        public int? InstructorID { get; set; } //? denotes nullable
-
-        //============Navigation Properties=============================
+        // ============= NAVIGATION PROPERTIES ==================//
         //Administrator is always an Instructor
         public virtual Instructor Administrator { get; set; }
 
         //One department with many courses (1:many)
         public virtual ICollection<Course> Courses { get; set; }
 
-        //TO DO: Handle
-
+        //TO DO :  Handle Concurrency conflicts (Add optimistic Concurrency)
 
     }
 }
