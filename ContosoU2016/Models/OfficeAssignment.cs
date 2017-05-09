@@ -13,23 +13,22 @@ namespace ContosoU2016.Models
         [ForeignKey("Instructor")]
         public int InstructorID { get; set; }
         /*
-         * There is a one to zero or one relationship between 
-         * the Instructornand te OfficeAssignment Entities.
-         * An OfficeAssignment only exists in relation to the instructor it's
-         * assigned to, and therefor it's primary key is also it's foreign key to
-         * the Instructor entity
+         * There is a one-to-zero-or-one relationship between the Instructor and 
+         * the OfficeAssignment Entities.
+         * An OfficeAssignment only exists in relation to the instructor it's assigned to,
+         * and therefore it's primary key is also it's foreign key to the Instructor 
+         * entity
          * 
-         * Problem: Entity Framwork cannot automatically recognize InstructorID an
-         *  the Primary key of this entity because its name doesn't follow the ID or 
-         *  ClassnameID naming convention.
-         *  
-         *  Therfore, the key attribute is used to identify it as the key.
+         * Problem:  Entity Framework cannot automatically recognize InstructorID as the
+         * Primary key of this entity because its name doesn't follow the ID or 
+         * ClassnameID naming convention.
+         * 
+         * Therefore, the key attribute is used to identify it as the key.
          */
          [StringLength(50)]
-         [Display(Name = "Office Location")]
+         [Display(Name ="Office Location")]
         public string Location { get; set; }
-        //============== Navigation Property ===================
+        //==================== NAVIGATION PROPERTY ============================== //
         public virtual Instructor Instructor { get; set; }
     }
-
 }

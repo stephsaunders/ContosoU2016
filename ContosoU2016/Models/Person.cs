@@ -8,24 +8,25 @@ namespace ContosoU2016.Models
 {
     public abstract class Person
     {
-        //SSaunders: Create the data models
+        //mwilliams:  Create the data models 
         public int ID { get; set; }
-        //----------------------------------------------------------
-        [Required]   //this goes with Lastname\/ 
+
+        [Required]
         [StringLength(65,ErrorMessage ="Last name cannot be longer than 65 characters.")]
-        [Display(Name = "Last Name")]
+        [Display(Name ="Last Name")]
         public string LastName { get; set; }
 
-        //----------------------------------------------------------
         [Required]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [StringLength(50,ErrorMessage = "First name cannot be longer than 50 characters.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
-        //----------------------------------------------------------        
+
+
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        //----------------------------------------------------------
-        //FullName: Calculated property with a get accessor only - will not get generated in database
+
+        //FullName:  Calculated property with a get accessor only  
+        //          - will not get generated in database
         [Display(Name ="Name")]
         public string FullName
         {
@@ -34,5 +35,15 @@ namespace ContosoU2016.Models
                 return LastName + ", " + FirstName;
             }
         }
+
+        public string IdFullName
+        {
+            get
+            {
+                return "("+ ID + ") " + LastName + ", " + FirstName;
+            }
+        }
+
+
     }
 }
