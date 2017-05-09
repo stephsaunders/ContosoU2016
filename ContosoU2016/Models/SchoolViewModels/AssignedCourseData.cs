@@ -8,14 +8,13 @@ namespace ContosoU2016.Models.SchoolViewModels
     public class AssignedCourseData
     {
         /*
-         * To provide a list of couse checkboxes with Course id and title as well as an indicator
+         * To provide a list of course checkboxed with Course id and title as well as an indicator
          * that the instructor is assigned or not assigned to a particular course, we are creating this
-         * ViewModle class
+         * ViewModel class
+         * 
          */
-
-        public int CourseID { get; set; } //FOr the CourseID
-        public string Title { get; set; }// For the Course Title
-        public bool Assigned { get; set; }// For (
-
+        public int CourseID { get; set; } //For the CourseID
+        public string Title { get; set; } //For the Course Title
+        public bool Assigned { get; set; }//For (is instructor Assigned or not to this course?)
     }
 }

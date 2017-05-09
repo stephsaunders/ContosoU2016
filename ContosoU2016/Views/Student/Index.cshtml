@@ -1,6 +1,7 @@
 @*@model IEnumerable<ContosoU2016.Models.Student>*@
 @using ContosoU2016.Helpers;
 @using ContosoU2016.Models;
+
 @model PaginatedList<Student>
 
 @{
@@ -13,67 +14,58 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@* Search from filter*@
+
+@* Search form filter *@
 <form asp-action="Index" method="get" class="form-inline">
     <div class="form-group">
         <label for="SearchString">Find by name:</label>
-        <input type="text" value="@ViewData["CurrentFilter"]" name="SearchString" id="SearchSting" placeholder="Jane Doe" />
-        <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> Search</button>
+        <input type="text" value="@ViewData["CurrentFilter"]"
+               name="SearchString" id="SearchString" placeholder="Jane Doe" />
+        <button type="submit" class="btn btn-success">
+        <i class="glyphicon glyphicon-search"></i> Search</button>
     </div>
-</form>
 
+</form>
 <table class="table">
     <thead>
         <tr>
-                
+                <th>
+                    @*@Html.DisplayNameFor(model => model.FirstName)*@      
+                    <a asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-sortOrder="@ViewData["FNameSortParm"]">First Name</a>
+                </th>
                 <th>
                     @*@Html.DisplayNameFor(model => model.LastName)*@
-                    @*(SS)*@
-                    <a asp-action="Index"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                    <a asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]"
                        asp-route-sortOrder="@ViewData["LNameSortParm"]">Last Name</a>
                 </th>
                 <th>
-                    @*@Html.DisplayNameFor(model => model.FirstName)*@
-                    @*(SS)*@
-
-                    <a asp-action="Index" 
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-sortOrder="@ViewData["FNamesortParm"]">First Name</a>
-                </th>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.Email)*@
-                    @*(SS)*@
-                    <a asp-action="Index" 
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   @*@Html.DisplayNameFor(model => model.Email)*@
+                    <a asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]"
                        asp-route-sortOrder="@ViewData["EmailSortParm"]">Email</a>
                 </th>
                 <th>
                     @*@Html.DisplayNameFor(model => model.EnrollmentDate)*@
-                    @*(SS)*@
-                    <a asp-action="Index"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]" 
-                       asp-route-sortOrder="@ViewData["DateSortParm"]">Date</a>
+                    <a asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-sortOrder="@ViewData["DateSortParm"]">Enrollment Date</a>
                 </th>
-                
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>            
-            <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EnrollmentDate)
+               @Html.DisplayFor(modelItem => item.EnrollmentDate)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
@@ -85,23 +77,22 @@
     </tbody>
 </table>
 
-@* (SS): Add paging controls*@
+@* mwilliams:  Add paging controls *@
 @{ 
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-
+<span class="page-number" style="color:red">Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages</span>
+@* Page 1 of 3 *@
+<a asp-action="Index" 
+   asp-route-sortOrder ="@ViewData["CurrentSort"]"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-page="@(Model.PageIndex -1)" class="btn btn-info @prevDisabled">
+    <i class="glyphicon glyphicon-triangle-left"></i> Previous</a>
 
 <a asp-action="Index"
    asp-route-sortOrder ="@ViewData["CurrentSort"]"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-page="@(Model.PageIndex -1)" class=" btn btn-success @prevDisabled"><i class="glyphicon glyphicon-triangle-left"></i>Previous</a>
-
-<span class="page-number" style="color:red"> Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages</span>
-@* Page 1 of 2*@
-
-<a asp-action="Index"
-   asp-route-sortOrder ="@ViewData["CurrentSort"]"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-page="@(Model.PageIndex +1)" class="btn btn-success @nextDisabled">Next<i class="glyphicon glyphicon-triangle-right"></i></a>
+   asp-route-page="@(Model.PageIndex +1)"class="btn btn-info @nextDisabled">
+    <i class="glyphicon glyphicon-triangle-right"></i> Next</a>
